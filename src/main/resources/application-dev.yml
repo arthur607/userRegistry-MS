@@ -1,0 +1,38 @@
+loggin:
+  level:
+    com:
+      project: DEBUG
+# Propriedades do Banco de dados em ambiente de Desenv
+app:
+  datasource:
+    main:
+      drive-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:file:./db/user
+      password: ${DATABASE_PASSWORD:src/main/resources/database/secret-db-username}
+      username: ${DATABASE_USERNAME:src/main/resources/database/secret-db-username}
+      pool-name: ManagerPool
+      min-pool-size: 1
+      max-pool-size: 3
+      max-lifetime: 1800000
+      validation-timeout: 250
+# Configurações do Spring JPA
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    database-plataform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        ddl-auto: update
+  cache:
+    type: redis
+    host: localhost
+    port: 6379
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8089

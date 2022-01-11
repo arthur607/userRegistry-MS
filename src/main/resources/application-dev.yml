@@ -26,6 +26,14 @@ spring:
       hibernate:
         format_sql: true
         ddl-auto: update
+  mail:
+    host: smtp.mailtrap.io
+    port: 2525
+    ssl: no
+    tls: yes
+    username: arthur
+    password: ${MAIL_PASSWORD}
+    protocol: smtp
   cache:
     type: redis
     host: localhost

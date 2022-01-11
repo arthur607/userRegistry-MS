@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.modal.dto.RegisterRequest;
 import com.example.demo.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +15,12 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    AuthService authService;
+   private final AuthService authService;
+
+    @Autowired
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {

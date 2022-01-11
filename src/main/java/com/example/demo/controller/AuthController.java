@@ -2,12 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.modal.dto.RegisterRequest;
 import com.example.demo.service.AuthService;
+import com.example.demo.service.MailContentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -17,9 +15,12 @@ public class AuthController {
 
    private final AuthService authService;
 
+   private final MailContentBuilder mailContentBuilder;
+
     @Autowired
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, MailContentBuilder mailContentBuilder) {
         this.authService = authService;
+        this.mailContentBuilder = mailContentBuilder;
     }
 
     @PostMapping("/signup")
@@ -27,4 +28,11 @@ public class AuthController {
         authService.signup(registerRequest);
         return new ResponseEntity<>("User Registration Successful", OK);
     }
+
+    @GetMapping("accountVerification/{token}")
+    public ResponseEntity<String> accountVerification(@PathVariable String token){
+        authService.verifyAccount(token);
+        return new ResponseEntity<>(mailContentBuilder.buildVerifyAccount("Account Activated Successfully"), OK);
+    }
+
 }

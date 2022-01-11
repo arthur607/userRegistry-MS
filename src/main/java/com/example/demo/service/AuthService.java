@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.error.SpringRedditException;
 import com.example.demo.modal.User;
 import com.example.demo.modal.VerificationToken;
 import com.example.demo.modal.dto.NotificationEmail;
@@ -25,12 +26,15 @@ public class AuthService {
 
     private final MailService mailService;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public AuthService(PasswordEncoder passwordEncoder, UserRepository repository, VerificationTokenRepository tokenRepository, MailService mailService) {
+    public AuthService(PasswordEncoder passwordEncoder, UserRepository repository, VerificationTokenRepository tokenRepository, MailService mailService, UserRepository userRepository) {
         this.passwordEncoder = passwordEncoder;
         this.repository = repository;
         this.tokenRepository = tokenRepository;
         this.mailService = mailService;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -65,4 +69,20 @@ public class AuthService {
         return token;
     }
 
+    public void verifyAccount(String token) {
+
+        fetchUserAndEnable(tokenRepository.findByToken(token)
+                .orElseThrow(() -> new SpringRedditException("invalid Token => " + token)));
+    }
+
+    @Transactional
+    private void fetchUserAndEnable(VerificationToken verificationToken) {
+
+        User user = userRepository.findByUsername(verificationToken.getUser().getUsername())
+                .orElseThrow(() -> new SpringRedditException("User not found with name - " +
+                        verificationToken.getUser().getUsername()));
+
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
 }

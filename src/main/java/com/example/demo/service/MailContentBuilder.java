@@ -18,4 +18,10 @@ public class MailContentBuilder {
         context.setVariable("message", message);
         return templateEngine.process("mailTemplate", context);
     }
+
+    public String buildVerifyAccount(String message) {
+        Context context = new Context();
+        context.setVariable("msg", message);
+        return templateEngine.process("VerifyAccount", context);
+    }
 }

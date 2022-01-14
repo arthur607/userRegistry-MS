@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.modal.dto.AuthenticationResponse;
+import com.example.demo.modal.dto.LoginRequest;
 import com.example.demo.modal.dto.RegisterRequest;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.MailContentBuilder;
@@ -33,6 +35,13 @@ public class AuthController {
     public ResponseEntity<String> accountVerification(@PathVariable String token){
         authService.verifyAccount(token);
         return new ResponseEntity<>(mailContentBuilder.buildVerifyAccount("Account Activated Successfully"), OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request){
+
+       return authService.login(request);
+
     }
 
 }

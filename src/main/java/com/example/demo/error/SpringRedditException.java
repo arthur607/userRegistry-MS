@@ -26,4 +26,5 @@ public class SpringRedditException extends RuntimeException {
         this.mensagem = msgError;
         this.codigo = HttpStatus.INTERNAL_SERVER_ERROR.value();
     }
+
 }

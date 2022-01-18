@@ -6,9 +6,11 @@ import com.example.demo.modal.VerificationToken;
 import com.example.demo.modal.dto.LoginRequest;
 import com.example.demo.modal.dto.NotificationEmail;
 import com.example.demo.modal.dto.RegisterRequest;
+import com.example.demo.modal.dto.TokenDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VerificationTokenRepository;
 import com.example.demo.security.JWTProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
@@ -99,13 +102,17 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public ResponseEntity<Object> login(LoginRequest request) {
+    public ResponseEntity<TokenDto> login(LoginRequest request) {
 
         try {
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
                     request.getPassword()));
 
-            return ResponseEntity.ok().build();
+            String token = jwtProvider.generateToken(authenticate);
+
+            log.info(token);
+
+            return ResponseEntity.ok().body(new TokenDto(token,"Bearer"));
 
         } catch (AuthenticationException e){
             return ResponseEntity.badRequest().build();
@@ -113,7 +120,7 @@ public class AuthService {
 
 //        SecurityContextHolder.getContext().setAuthentication(authenticate);
 //
-//        String token = jwtProvider.generateToken(authenticate);
+
 //
 //        return new AuthenticationResponse(token, request.getUsername());
     }

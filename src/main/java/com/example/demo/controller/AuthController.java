@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.modal.dto.AuthenticationResponse;
 import com.example.demo.modal.dto.LoginRequest;
 import com.example.demo.modal.dto.RegisterRequest;
+import com.example.demo.modal.dto.TokenDto;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.MailContentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequest request){
+    public ResponseEntity<TokenDto> login(@RequestBody LoginRequest request){
 
        return authService.login(request);
 

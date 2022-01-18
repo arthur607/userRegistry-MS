@@ -2,6 +2,7 @@ package com.example.demo.security;
 
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
+import java.util.Date;
+import java.util.UUID;
 
 import static java.util.Date.from;
 
@@ -38,12 +41,17 @@ public class JWTProvider {
     }
 
     public String  generateToken(Authentication authentication){
-        User principal = (User) authentication.getPrincipal();
+        var logado = (User) authentication.getPrincipal();
+
+        Date today = new Date();
+        Date dateExpiration = new Date(today.getTime() + 900000);
 
         return Jwts.builder()
-                .setSubject(principal.getUsername())
+                .setIssuer("Arthur's API")
+                .setSubject(logado.getUsername())
                 .setIssuedAt(from(Instant.now()))
-                .signWith(getPrivateKey())
+                .setExpiration(dateExpiration)
+                .signWith(SignatureAlgorithm.HS256, UUID.randomUUID().toString())
                 .compact();
     }
 

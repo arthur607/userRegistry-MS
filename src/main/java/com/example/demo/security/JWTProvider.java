@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,8 @@ public class JWTProvider {
 
     private KeyStore keyStore;
 
+    private final String secretToken = UUID.randomUUID().toString();
+
 
     @PostConstruct
     public void init() {
@@ -51,7 +54,7 @@ public class JWTProvider {
                 .setSubject(logado.getUsername())
                 .setIssuedAt(from(Instant.now()))
                 .setExpiration(dateExpiration)
-                .signWith(SignatureAlgorithm.HS256, UUID.randomUUID().toString())
+                .signWith(SignatureAlgorithm.HS256, secretToken)
                 .compact();
     }
 
@@ -62,5 +65,21 @@ public class JWTProvider {
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
             throw new SecurityException("Exception occured while retrieving public key from keystore", e);
         }
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            Jwts.parser().setSigningKey(secretToken).parseClaimsJws(token);
+            return true;
+        }catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    public String recoverUserId(String token) {
+        Claims body = Jwts.parser().setSigningKey(secretToken).parseClaimsJws(token).getBody();
+
+       return body.getSubject();
     }
 }

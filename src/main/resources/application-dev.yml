@@ -31,8 +31,8 @@ spring:
     port: 2525
     ssl: no
     tls: yes
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME:78302434ca5131}
+    password: ${MAIL_PASSWORD:27dd472444306f}
     protocol: smtp
   cache:
     type: redis
@@ -44,3 +44,5 @@ spring:
 
 server:
   port: 8089
+
+  #-Dspring.profiles.active=dev

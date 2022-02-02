@@ -1,11 +1,11 @@
 package com.example.demo.config;
 
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JWTAuthenticationFilter;
+import com.example.demo.security.JWTProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,9 +21,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
+    private final JWTProvider jwtProvider;
+
+    private final UserRepository userRepository;
+
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService, JWTProvider jwtProvider, UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
+        this.jwtProvider = jwtProvider;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -45,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-               .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+               .addFilterBefore(new JWTAuthenticationFilter(jwtProvider, userRepository), UsernamePasswordAuthenticationFilter.class);
 
     }
 

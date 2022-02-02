@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.modal.dto.AuthenticationResponse;
 import com.example.demo.modal.dto.LoginRequest;
 import com.example.demo.modal.dto.RegisterRequest;
 import com.example.demo.modal.dto.TokenDto;
